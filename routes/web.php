@@ -19,4 +19,5 @@ Route::get('/', function () {
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('property', 'App\Http\Controllers\Admin\PropertyController')->except(['show']);
+    Route::resource('option', 'App\Http\Controllers\Admin\OptionController')->except(['show']);
 });
