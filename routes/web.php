@@ -23,13 +23,19 @@ Route::get('/biens/{slug}-{property}', [\App\Http\Controllers\PropertyController
 ]);
 Route::post('/biens/{property}/contact', [\App\Http\Controllers\PropertyController::class, 'contact'])->name('property.contact')->where([
     'property' => $idRegex,
-]);;
+]);
 
 Route::get('/login', [\App\Http\Controllers\AuthController::class, 'login'])->middleware('guest')->name('login');
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'doLogin']);
 Route::delete('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::get('/images/{path}', [\App\Http\Controllers\ImageController::class, 'show'])->where('path', '.*');
+
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () use ($idRegex) {
     Route::resource('property', 'App\Http\Controllers\Admin\PropertyController')->except(['show']);
     Route::resource('option', 'App\Http\Controllers\Admin\OptionController')->except(['show']);
+    Route::delete('picture/{picture}', [\App\Http\Controllers\Admin\PictureController::class, 'destroy'])->name('picture.destroy')
+        ->where([
+        'picture' => $idRegex
+    ]);
 });
