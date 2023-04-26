@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ContactRequestNotification extends Notification
+class ContactRequestNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -29,10 +29,6 @@ class ContactRequestNotification extends Notification
     public function via(object $notifiable): array
     {
         return ['mail', 'database'];
-//        if ($notifiable instanceof User && $notifiable->accept_email) {
-//            return ['mail', 'database'];
-//        }
-//        return ['database'];
     }
 
     /**
@@ -40,6 +36,7 @@ class ContactRequestNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        sleep(2);
         return (new MailMessage)
                     ->line('The introduction to the notification.')
                     ->action('Notification Action', url('/'))
