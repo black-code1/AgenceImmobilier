@@ -8,14 +8,21 @@ use App\Models\Option;
 use App\Models\Picture;
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PropertyController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Property::class, 'property');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+//        dd(Auth::user()->can('viewAny', Property::class));
         return view('admin.properties.index', [
             'properties' => Property::orderBy('created_at', 'desc')->withTrashed()->paginate(25)
         ]);
@@ -59,6 +66,7 @@ class PropertyController extends Controller
      */
     public function edit(Property $property)
     {
+//        dd($this->authorize('delete', $property));
         return view('admin.properties.form', [
            'property' => $property,
             'options' => Option::pluck('name', 'id'),

@@ -38,7 +38,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
     Route::delete('picture/{picture}', [\App\Http\Controllers\Admin\PictureController::class, 'destroy'])->name('picture.destroy')
         ->where([
         'picture' => $idRegex
-    ]);
+    ])->can('delete', 'picture');
 });
 
 Route::middleware('auth')->group(function () {
