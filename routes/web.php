@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,13 +26,13 @@ Route::post('/biens/{property}/contact', [\App\Http\Controllers\PropertyControll
     'property' => $idRegex,
 ]);
 
-Route::get('/login', [\App\Http\Controllers\AuthController::class, 'login'])->middleware('guest')->name('login');
-Route::post('/login', [\App\Http\Controllers\AuthController::class, 'doLogin']);
-Route::delete('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth')->name('logout');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/images/{path}', [\App\Http\Controllers\ImageController::class, 'show'])->where('path', '.*');
 
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () use ($idRegex) {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () use ($idRegex) {
     Route::resource('property', 'App\Http\Controllers\Admin\PropertyController')->except(['show']);
     Route::resource('option', 'App\Http\Controllers\Admin\OptionController')->except(['show']);
     Route::delete('picture/{picture}', [\App\Http\Controllers\Admin\PictureController::class, 'destroy'])->name('picture.destroy')
@@ -39,3 +40,11 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () us
         'picture' => $idRegex
     ]);
 });
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
