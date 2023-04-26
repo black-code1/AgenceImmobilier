@@ -7,10 +7,7 @@ use App\Http\Requests\Admin\PropertyFormRequest;
 use App\Models\Option;
 use App\Models\Picture;
 use App\Models\Property;
-use Facades\App\Weather;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class PropertyController extends Controller
 {
@@ -24,13 +21,6 @@ class PropertyController extends Controller
      */
     public function index(AuthManager $auth)
     {
-//        dd($auth->user());
-//        Donne moi les service qui correspond a auth
-//        dd(app('auth'));
-//        dd(app(AuthManager::class));
-//        dd(Auth::user());
-//        dd(app('auth')->user());
-        dd(Weather::isSunnyTomorrow());
         return view('admin.properties.index', [
             'properties' => Property::orderBy('created_at', 'desc')->withTrashed()->paginate(25)
         ]);
@@ -74,7 +64,6 @@ class PropertyController extends Controller
      */
     public function edit(Property $property)
     {
-//        dd($this->authorize('delete', $property));
         return view('admin.properties.form', [
            'property' => $property,
             'options' => Option::pluck('name', 'id'),
