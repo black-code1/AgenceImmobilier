@@ -52,17 +52,19 @@ class Property extends Model
     /**
      * @param UploadedFile[] $files
      */
-    public function attachFiles(array $files)
+    public function attachFiles(?array $files)
     {
         $pictures = [];
-        foreach ($files as $file) {
-            if ($file->getError()) {
-                continue;
+        if($files){
+            foreach ($files as $file) {
+                if ($file->getError()) {
+                    continue;
+                }
+                $filename = $file->store('properties/' . $this->id, 'public');
+                $pictures[] = [
+                    'filename' => $filename
+                ];
             }
-            $filename = $file->store('properties/' . $this->id, 'public');
-            $pictures[] = [
-                'filename' => $filename
-            ];
         }
         if (count($pictures) > 0) {
             $this->pictures()->createMany($pictures);
